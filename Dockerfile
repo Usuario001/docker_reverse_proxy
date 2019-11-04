@@ -1,23 +1,17 @@
 FROM debian:stretch
 
-# Installation de NGINX de dnsmasq
-RUN apt-get update
-RUN apt-get install nginx curl dnsmasq -y
+MAINTAINER Usuario001 "patinogutierrez@icloud.com"
 
-# Creacion de carpeta para certificados
-RUN mkdir /etc/nginx/certificates
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && \
+    DEBIAN_FRONTEND=noninteractive apt-get -yq install net-tools nginx && \
+    useradd -ms /bin/bash aurora && \
+    rm -f /etc/nginx/fastcgi.conf /etc/nginx/fastcgi_params && \
+    rm -f /etc/nginx/snippets/fastcgi-php.conf /etc/nginx/snippets/snakeoil.conf
 
-# Volumes
-VOLUME /etc/nginx/sites-enabled
-VOLUME /etc/nginx/certificates
+EXPOSE 80
+EXPOSE 443
 
-# Copiar los ficheros de configuracion
-COPY confs/nginx.conf /etc/nginx/
-COPY confs/proxy.conf /etc/nginx/conf.d/
+COPY nginx/snippets /etc/nginx/snippets
 
-# Exposicion de los puertos
-EXPOSE 80 443
-
-# Add command
-CMD ["nginx", "-g", "daemon off;"]
-HEALTHCHECK CMD curl --fail http://localhost || exit 1
+ENTRYPOINT ["/usr/sbin/nginx", "-g", "daemon off;"]
