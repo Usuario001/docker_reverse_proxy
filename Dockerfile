@@ -92,6 +92,8 @@ RUN set -x \
         && rm -rf "$tempDir" /etc/apt/sources.list.d/temp.list; \
     fi
 
+RUN apt-get update && apt-get install -y curl nano
+
 #Missing configuration not founded
 #ADD file in /
 #CMD ["/bin/bash"]
@@ -113,7 +115,4 @@ EXPOSE 443/tcp 80/tcp
 
 ENTRYPOINT ["/usr/sbin/nginx", "-g", "daemon off;"]
 
-
-
-
-
+CMD ["/bin/sh", "-c", "exec nginx -g 'daemon off;';"]
