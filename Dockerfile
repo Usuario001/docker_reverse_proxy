@@ -115,4 +115,3 @@ EXPOSE 443/tcp 80/tcp
 
 ENTRYPOINT ["/usr/sbin/nginx", "-g", "daemon off;"]
 
-CMD ["/bin/sh", "-c", "exec nginx -g 'daemon off;';"]
